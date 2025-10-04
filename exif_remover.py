@@ -3,10 +3,13 @@
 
 #!/usr/bin/env python3
 
-# This script removes EXIF data from images by copying pixel data, but not EXIF data to a new image,
-# overriding the original image in your "/images" folder."
-
-# Ensure you run this script from the "/images" folder that contains the image you want to remove EXIF data from.
+# This program is for .JPG and .TIFF format files.
+# Installation and usage instructions:
+# 1. Install Pillow (Pillow will not work if you have PIL installed):
+# python3 -m pip install --upgrade pip
+# python3 -m pip install --upgrade Pillow
+# 2. Add .jpg images to subfolder ./images from where the script is stored.
+# 3. Run the script: python3 exif_remover.py
 
 print(""" _______  _____ _____   ____  _____ __  __  _____     _______ ____  
 | ____\ \/ /_ _|  ___| |  _ \| ____|  \/  |/ _ \ \   / / ____|  _ \ 
@@ -21,13 +24,20 @@ import os
 from PIL import Image
 
 cwd = os.getcwd()
-if cwd.endswith("/images"):
-    print("Images folder detected.")
+if not os.path.isdir(os.path.join(cwd, "images")):
+	print("Images folder not detected, ensure you have a './images' subfolder")
+	exit()
 else:
-    print("Images folder not detected. Please run this script from the images folder.")
-    exit()
+    print("Images folder detected")
+    os.chdir(os.path.join(cwd, "images"))
+    cwd = os.getcwd()
+
 
 image = input("What image you want to remove EXIF data from?: ")
+
+if image.strip() not in os.listdir(cwd):
+	print("File not found")
+	exit()
 
 ## Method to check if exif data exists
 def has_exif(i):
@@ -39,12 +49,12 @@ def has_exif(i):
 
 for file in os.listdir(cwd):
     try:
-        if file != image:
+        if file != image.strip():
             continue
 
         img = Image.open(file)
 
-        if has_exif(img) == False:
+        if not has_exif(img):
             print("No EXIF data found in this image.")
             break
 
@@ -59,7 +69,7 @@ for file in os.listdir(cwd):
         image_no_exif.save(file)
         print(f"EXIF data removed from {file}")
     except IOError:
-        print(f'File format "{file[len(file) - 3]}" not supported')
+        print(f'File format {file[file.index("."):]} not supported')
 
 
 
