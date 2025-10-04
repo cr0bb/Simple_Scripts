@@ -1,6 +1,8 @@
 # Disclaimer: This script is for educational purposes only.
 # Do not use against any photos that you don't own or have authorization to test.
 
+#!/usr/bin/env python3
+
 # This script removes EXIF data from images by copying pixel data, but not EXIF data to a new image,
 # overriding the original image in your "/images" folder."
 
